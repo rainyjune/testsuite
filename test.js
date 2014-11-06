@@ -3,13 +3,15 @@
   var resultRootElementId = "results";
   var resultRootElementClass = "testsuite";
   var resultRootElement = null;
+  
+  var resultItemElementTagName = "li";
 
   function assert(value, description) {
     setResultRootElement();
-    var li = document.createElement("li");// TODO, the tag name should be configurable
-    li.className = value ? "pass" : "fail"; // TODO, the css class name should be configurable
-    li.appendChild(document.createTextNode(description));
-    resultRootElement.appendChild(li);
+    var item = document.createElement(resultItemElementTagName);
+    item.className = value ? "pass" : "fail"; // TODO, the css class name should be configurable
+    item.appendChild(document.createTextNode(description));
+    resultRootElement.appendChild(item);
   }
   
   function setResultRootElement() {
@@ -20,6 +22,7 @@
     if (!resultRootElement) {
       resultRootElement = addRootElement();
     }
+    addRootElementClass();
   }
 
   function addRootElement(tagName) {
@@ -35,9 +38,15 @@
   
   function addRootElementClass() {
     if (!resultRootElement) {
-      addRootElement();
+      setResultRootElement();
     }
-    resultRootElement.className += "resultRootElementClass";
+    var classRegExp = new RegExp("\\b" + resultRootElementClass + "\\b");
+    var originalClassName = resultRootElement.className;
+    if (classRegExp.test(originalClassName)) {
+      return;
+    }
+    var isEndofSpace = originalClassName.charAt(originalClassName.length-1) == " ";    
+    resultRootElement.className += isEndofSpace ? resultRootElementClass : " " + resultRootElementClass;
   }
   
   window.assert = assert;
