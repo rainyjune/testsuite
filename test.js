@@ -5,13 +5,25 @@
   var resultRootElement = null;
   
   var resultItemElementTagName = "li";
+  
+  setResultRootElement();
+  
+  function test(name, fn) {
+    resultRootElement = document.getElementById(resultRootElementId);
+    resultRootElement = assert(true, name).appendChild(document.createElement("ul"));
+    fn();
+  }
 
   function assert(value, description) {
-    setResultRootElement();
+    //setResultRootElement();
     var item = document.createElement(resultItemElementTagName);
     item.className = value ? "pass" : "fail"; // TODO, the css class name should be configurable
     item.appendChild(document.createTextNode(description));
     resultRootElement.appendChild(item);
+    if (!value) {
+      item.parentNode.parentNode.className = "fail";
+    }
+    return item;
   }
   
   function setResultRootElement() {
@@ -50,5 +62,6 @@
   }
   
   window.assert = assert;
+  window.test = test;
   
 })(window, undefined);
