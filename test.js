@@ -15,7 +15,6 @@
   }
 
   function assert(value, description) {
-    //setResultRootElement();
     var item = document.createElement(resultItemElementTagName);
     item.className = value ? "pass" : "fail"; // TODO, the css class name should be configurable
     item.appendChild(document.createTextNode(description));
