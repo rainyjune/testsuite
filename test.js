@@ -6,12 +6,35 @@
   
   var resultItemElementTagName = "li";
   
+  var queue = [], paused = false;
+  
   setResultRootElement();
   
   function test(name, fn) {
-    resultRootElement = document.getElementById(resultRootElementId);
-    resultRootElement = assert(true, name).appendChild(document.createElement("ul"));
-    fn();
+    queue.push(function(){
+      resultRootElement = document.getElementById(resultRootElementId);
+      resultRootElement = assert(true, name).appendChild(document.createElement("ul"));
+      fn();
+    });
+    runTest();
+  }
+  
+  function pause() {
+    paused = true;
+  }
+  
+  function resume() {
+    paused = false;
+    setTimeout(runTest, 1);
+  }
+  
+  function runTest() {
+    if (!paused && queue.length) {
+      queue.shift()();
+      if (!paused) {
+        resume();
+      }
+    }
   }
 
   function assert(value, description) {
@@ -62,5 +85,7 @@
   
   window.assert = assert;
   window.test = test;
+  window.pause = pause;
+  window.resume = resume;
   
 })(window, undefined);
